@@ -54,37 +54,19 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     //make the correct board size
     _board = utils.makeBoard(action.data.split(' ')[0]);
     //fill the board with boats of the sizes above
-    // _board = utils.layShips(_board, action.data.split(' ')[0], _boats);-------FIX ME!!
+    _board = utils.layShips(_board, action.data.split(' ')[0], _boats);
     appStore.emitChange();
   }
 
   if (action.actionType ==="CLICKED_CELL") {
     //check out its position in the board and render the correct image/colour to the user
     var cell = _board[action.data.row][action.data.col];
-    console.log(_board[action.data.row], action.data.row, action.data.col);
-    
-    // for (var i = 0; i < _board.length; i++) {
-    //     // debugger;
-    //   if (i === action.data.row) {
-    //     if (_board[i][action.data.col].isShip) {
-    //       console.log('bomb hit target');
-    //       _board[i][action.data.col].isClicked = true;
-    //       _board[i][action.data.col].isHit = true;
-    //     } else {
-    //       console.log('water');
-    //       _board[i][action.data.col].isClicked = true;
-    //     }
-    //   }
-    // }
     if (cell.isShip) {
-      console.log('bomb hit target');
       cell.isClicked = true;
       cell.isHit = true;
     } else {
-      console.log('water');
       cell.isClicked = true;
     }
-    console.log('cell', _board);
     appStore.emitChange();
   }
 

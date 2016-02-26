@@ -18,7 +18,6 @@ var appActions = {
   },
 
   handleClickedCell: function (row, col) {
-    console.log('got coords', row, col);
     appDispatcher.handleClientAction({
       actionType: "CLICKED_CELL",
       data: {
