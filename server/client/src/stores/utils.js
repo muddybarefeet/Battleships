@@ -1,36 +1,62 @@
-
+//generate a random position
 var genRandomPosition = function () {
   var positionChoice = ['left', 'up', 'right', 'down'];
   var num = Math.floor((Math.random()*3));
   return positionChoice[num];
 };
 
+//generate a random number to be used as a coordinate
 var genCoord = function (size) {
-  return Math.floor((Math.random()*size))+1;
+  return Math.floor((Math.random()*size));
 };
 
-var getAllCoordsForBoat = function (board, boatLength, position, row, col, size) {
+//get the coords that the boat can be placed at
+var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
 
   var coords = [];
 
-  while (boatLength > 0) {
+  var boatLength = boat.length;
 
-    if (position === 'left' && board[row][col-1].isShip === false && col-1 >= 0) {
-      col -= 1;
-      boatLength -= 1;
-      coords.push([row,col]);
-    } else if (position === 'up' && board[row-1][col].isShip === false && row-1 >= 0) {
-      row -= 1;
-      boatLength -= 1;
-      coords.push([row, col]);
-    } else if (position === 'right' && board[row][col+1].isShip === false && col+1 <= size) {
-      col += 1;
-      boatLength -= 1;
-      coords.push([row, col]);
-    } else if (position === 'down' && board[row+1][col].isShip === false && row+1 <= size) {
-      row += 1;
-      boatLength -= 1;
-      coords.push([row, col]);
+  while (boatLength > 0) {
+    // debugger;
+    if (position === 'left' && board[row][col-1]) {
+      if (board[row][col-1].isShip === false && col-1 >= 0) {
+        col -= 1;
+        boatLength -= 1;
+        board[row][col-1].shipType = boat.type;
+        coords.push([row,col]);
+      } else {
+        boatLength = 0;
+      }
+    } else if (position === 'up' && board[row-1]) {
+      if (board[row-1][col].isShip === false && row-1 >= 0) {
+        row -= 1;
+        boatLength -= 1;
+        board[row-1][col].shipType = boat.type;
+        coords.push([row, col]);
+      } else {
+        boatLength = 0;
+      }
+    } else if (position === 'right' && board[row][col+1]) {
+      if (board[row][col+1].isShip === false && col+1 < size) {
+        col += 1;
+        boatLength -= 1;
+        board[row][col+1].shipType = boat.type;
+        coords.push([row, col]);
+      } else {
+        boatLength = 0;
+      }
+    } else if (position === 'down' && board[row+1]) {
+      if (board[row+1][col].isShip === false && row+1 < size) {
+        row += 1;
+        boatLength -= 1;
+        board[row+1][col].shipType = boat.type;
+        coords.push([row, col]);
+      } else {
+        boatLength = 0;
+      }
+    } else {
+      boatLength = 0;
     }
 
   }
@@ -39,6 +65,7 @@ var getAllCoordsForBoat = function (board, boatLength, position, row, col, size)
 
 };
 
+//take the validated coords and plot to the board
 var plotBoats = function (board, coords) {
 
   //take the board and loop throught the given coords and plot on the board
@@ -53,7 +80,7 @@ var plotBoats = function (board, coords) {
 
 
 var utils = {
-
+  //lay out the board for the store
   makeBoard: function (size) {
     //take the size and return a matrix of arrays to be the board
     //number staring passed in so make it a number
@@ -64,10 +91,11 @@ var utils = {
     for (var k = 0; k < size; k++) {
       var row = [];
       for (var i = 0; i < size; i++) {
-        row.push({
+         row.push({
           isClicked:false,
           isHit: false,
-          isShip: false
+          isShip: false,
+          shipType: null
         });
       }
       board.push(row);
@@ -78,27 +106,19 @@ var utils = {
 
   },
 
-
+  //main function to place the boats
   layShips: function (board, size, boats) {
-   //loop through the boats lengths
-    //on each generate random coords and position
-    //go to that coord on the board
-      //addShip()
-      //if false returned then have to generate new coords and try again 
-      //else go to the next ship
-    boats = [2];
-
+    //boats is an array of objects containing information on the boats
     for (var i = 0; i < boats.length; i++) {
 
-      var boatLength = boats[i];
       var pos = genRandomPosition();
       var row = genCoord(size-1);
       var col = genCoord(size-1);
 
       if (board[row][col].isShip === false) {
 
-        var coords = getAllCoordsForBoat(board, boatLength, pos, row, col, size-1);
-        console.log('coords', coords);
+        var coords = getAllCoordsForBoat(board, boats[i], pos, row, col, size);
+        console.log('coords', coords, 'boat length', boats[i].length);
 
         if (coords.length === boatLength) {
           board = plotBoats(board, coords);

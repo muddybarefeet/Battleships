@@ -7,12 +7,21 @@ var utils = require('./utils.js');
 
 var _board;
 
-//to be implemented when need to use levels
-// var _data = {
-//   level: null
-// };
+var _hits = {
+  "Aircraft carrier": 5,
+  "Battleship": 4,
+  "Submarine": 3,
+  "Cruiser": 3,
+  "Destroyer": 2
+};
 
-var _boats = [5,4,3,3,2];
+var _boats = [
+              {type: "Aircraft carrier", length: 5},
+              {type: "Battleship", length: 4},
+              {type: "Submarine", length: 3},
+              {type: "Cruiser", length: 3},
+              {type: "Destroyer", length: 2}
+              ];
 
 var appStore = Object.assign(new EventEmitter (), {
   
@@ -20,35 +29,26 @@ var appStore = Object.assign(new EventEmitter (), {
     return _board;
   },
 
-  emitChange: function (){
+  getBoatData: function () {
+    return _hits;
+  },
+
+  emitChange: function () {
     this.emit(CHANGE_EVENT);
   },
 
-  addChangeListener: function(callback){
+  addChangeListener: function (callback) {
     this.addListener(CHANGE_EVENT, callback);
   },
 
-  removeChangeListener: function(callback){
+  removeChangeListener: function (callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
 });
 
-AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload 
+AppDispatcher.register(function (payload) { //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload 
   var action = payload.action;//payload is the object of data coming from dispactcher //action is the object passed from the actions file
-
-  //not suitable for this game use for minesweeper
-  // if(action.actionType === "SET_LEVEL") {
-  //   console.log('level chosen and sent to the store', action.data);
-  //   if (action.data === 'Learning') {
-  //     _data.level = 1;
-  //   } else if (action.data === 'Improver') {
-  //     _data.level = 2;
-  //   } else if (action.data === 'Ninja') {
-  //     _data.level = 3;
-  //   }
-
-  // }
 
   if (action.actionType === "SET_BOARD_SIZE") {
     //make the correct board size
@@ -64,6 +64,7 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     if (cell.isShip) {
       cell.isClicked = true;
       cell.isHit = true;
+      _hits[cell.shipType] -= 1;
     } else {
       cell.isClicked = true;
     }

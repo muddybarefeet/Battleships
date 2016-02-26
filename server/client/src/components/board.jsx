@@ -23,7 +23,6 @@ var Board = React.createClass({
     this.setState({
       board: appStore.getBoardData()
     });
-    //on click the action come back here...
 
   },
 

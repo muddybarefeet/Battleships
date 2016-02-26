@@ -1,6 +1,7 @@
 
 var React = require('react');
 var Board = require('./board.jsx');
+var Boats = require('./boats.jsx');
 
 var appStore = require('./../stores/appStore.js');
 var appActions = require('./../actions/appActions.js');
@@ -22,25 +23,39 @@ var App = React.createClass({
   render: function render () {
 
     return (
-      <div>
-        {/*here we have the main page which containtains a title, level-picker, board-size and board*/}
-        <h1>Battleships</h1>
+      <div className="container">
 
-        {/*<select className="form-control" onChange={this.handleLevelChange}>
-          <option>Pick th' level t' play at</option>
-          <option>Learning</option>
-          <option>Improver</option>
-          <option>Ninja</option>
-        </select>*/}
+        <div className="flexHeader">
 
-        <select className="form-control" onChange={this.handleBoardSizeChange}>
-          <option>Pick wha' size o' board ye wants</option>
-          <option>10 x 10</option>
-          <option>15 x 15</option>
-          <option>20 x 20</option>
-        </select>
+          <h1 className="font spaceRight">Battleships</h1>
 
-        <Board />
+        </div>
+        
+        <div className="row">
+          <div className="col-xs-6 col-md-6">
+            <select className="form-control" onChange={this.handleBoardSizeChange}>
+              <option>Chose your board size</option>
+              <option>8 x 8</option>
+              <option>10 x 10</option>
+              <option>12 X 12</option>
+            </select>
+          </div>
+
+          <div className="col-xs-6 col-md-6">
+            data
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-xs-6 col-md-7">
+            <Board />
+          </div>
+
+          <div className="col-xs-4 col-md-3">
+            <Boats />
+          </div>
+
+        </div>
 
       </div>
     )

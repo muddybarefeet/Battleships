@@ -1,15 +1,53 @@
+html body {
+  margin: 0;
+  height: 100%;
+  font-family: 'Black Ops One', cursive;
+}
+
 td {
-  border: 1px solid grey;
+  border: 1px solid black;
   width: 40px;
   height: 40px;
+  background-color: grey;
 }
 
 td:hover {
-  background-color: orange;
+  background-color: #fdfdf8;
 }
+
+table {
+  display: flex;
+  justify-content:flex-start;
+  margin-top:30px;
+}
+
 
 .tileWidth {
   width: 40px;
   border: 1px solid #e4e4e4;
+  background-color: white;
 }
+
+.font {
+  /*font-family: 'Jim Nightshade', cursive;*/
+  font-size: 55px;
+  text-align: center;
+}
+
+.flexHeader {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.spaceRight {
+  margin-right: 20px;
+}
+
+.boatBox {
+  border: 1px solid blue;
+  width: 80px;
+  height: 30px;
+}
+
 

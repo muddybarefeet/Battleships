@@ -19661,6 +19661,7 @@
 	
 	var React = __webpack_require__(1);
 	var Board = __webpack_require__(160);
+	var Boats = __webpack_require__(169);
 
 	var appStore = __webpack_require__(161);
 	var appActions = __webpack_require__(168);
@@ -19684,37 +19685,67 @@
 
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'container' },
 	      React.createElement(
-	        'h1',
-	        null,
-	        'Battleships'
-	      ),
-	      React.createElement(
-	        'select',
-	        { className: 'form-control', onChange: this.handleBoardSizeChange },
+	        'div',
+	        { className: 'flexHeader' },
 	        React.createElement(
-	          'option',
-	          null,
-	          'Pick wha\' size o\' board ye wants'
-	        ),
-	        React.createElement(
-	          'option',
-	          null,
-	          '10 x 10'
-	        ),
-	        React.createElement(
-	          'option',
-	          null,
-	          '15 x 15'
-	        ),
-	        React.createElement(
-	          'option',
-	          null,
-	          '20 x 20'
+	          'h1',
+	          { className: 'font spaceRight' },
+	          'Battleships'
 	        )
 	      ),
-	      React.createElement(Board, null)
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-6 col-md-6' },
+	          React.createElement(
+	            'select',
+	            { className: 'form-control', onChange: this.handleBoardSizeChange },
+	            React.createElement(
+	              'option',
+	              null,
+	              'Chose your board size'
+	            ),
+	            React.createElement(
+	              'option',
+	              null,
+	              '8 x 8'
+	            ),
+	            React.createElement(
+	              'option',
+	              null,
+	              '10 x 10'
+	            ),
+	            React.createElement(
+	              'option',
+	              null,
+	              '12 X 12'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-6 col-md-6' },
+	          'data'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-6 col-md-7' },
+	          React.createElement(Board, null)
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-4 col-md-3' },
+	          React.createElement(Boats, null)
+	        )
+	      )
 	    );
 	  }
 
@@ -19753,7 +19784,6 @@
 	    this.setState({
 	      board: appStore.getBoardData()
 	    });
-	    //on click the action come back here...
 	  },
 
 	  handleClick: function (event) {
@@ -19825,17 +19855,24 @@
 
 	var _board;
 
-	//to be implemented when need to use levels
-	// var _data = {
-	//   level: null
-	// };
+	var _hits = {
+	  "Aircraft carrier": 5,
+	  "Battleship": 4,
+	  "Submarine": 3,
+	  "Cruiser": 3,
+	  "Destroyer": 2
+	};
 
-	var _boats = [5, 4, 3, 3, 2];
+	var _boats = [{ type: "Aircraft carrier", length: 5 }, { type: "Battleship", length: 4 }, { type: "Submarine", length: 3 }, { type: "Cruiser", length: 3 }, { type: "Destroyer", length: 2 }];
 
 	var appStore = Object.assign(new EventEmitter(), {
 
 	  getBoardData: function () {
 	    return _board;
+	  },
+
+	  getBoatData: function () {
+	    return _hits;
 	  },
 
 	  emitChange: function () {
@@ -19856,19 +19893,6 @@
 	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
 	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
 
-	  //not suitable for this game use for minesweeper
-	  // if(action.actionType === "SET_LEVEL") {
-	  //   console.log('level chosen and sent to the store', action.data);
-	  //   if (action.data === 'Learning') {
-	  //     _data.level = 1;
-	  //   } else if (action.data === 'Improver') {
-	  //     _data.level = 2;
-	  //   } else if (action.data === 'Ninja') {
-	  //     _data.level = 3;
-	  //   }
-
-	  // }
-
 	  if (action.actionType === "SET_BOARD_SIZE") {
 	    //make the correct board size
 	    _board = utils.makeBoard(action.data.split(' ')[0]);
@@ -19883,6 +19907,7 @@
 	    if (cell.isShip) {
 	      cell.isClicked = true;
 	      cell.isHit = true;
+	      _hits[cell.shipType] -= 1;
 	    } else {
 	      cell.isClicked = true;
 	    }
@@ -20536,45 +20561,72 @@
 /* 167 */
 /***/ function(module, exports) {
 
-	
+	//generate a random position
 	var genRandomPosition = function () {
 	  var positionChoice = ['left', 'up', 'right', 'down'];
 	  var num = Math.floor(Math.random() * 3);
 	  return positionChoice[num];
 	};
 
+	//generate a random number to be used as a coordinate
 	var genCoord = function (size) {
-	  return Math.floor(Math.random() * size) + 1;
+	  return Math.floor(Math.random() * size);
 	};
 
-	var getAllCoordsForBoat = function (board, boatLength, position, row, col, size) {
+	//get the coords that the boat can be placed at
+	var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
 
 	  var coords = [];
 
-	  while (boatLength > 0) {
+	  var boatLength = boat.length;
 
-	    if (position === 'left' && board[row][col - 1].isShip === false && col - 1 >= 0) {
-	      col -= 1;
-	      boatLength -= 1;
-	      coords.push([row, col]);
-	    } else if (position === 'up' && board[row - 1][col].isShip === false && row - 1 >= 0) {
-	      row -= 1;
-	      boatLength -= 1;
-	      coords.push([row, col]);
-	    } else if (position === 'right' && board[row][col + 1].isShip === false && col + 1 <= size) {
-	      col += 1;
-	      boatLength -= 1;
-	      coords.push([row, col]);
-	    } else if (position === 'down' && board[row + 1][col].isShip === false && row + 1 <= size) {
-	      row += 1;
-	      boatLength -= 1;
-	      coords.push([row, col]);
+	  while (boatLength > 0) {
+	    // debugger;
+	    if (position === 'left' && board[row][col - 1]) {
+	      if (board[row][col - 1].isShip === false && col - 1 >= 0) {
+	        col -= 1;
+	        boatLength -= 1;
+	        board[row][col - 1].shipType = boat.type;
+	        coords.push([row, col]);
+	      } else {
+	        boatLength = 0;
+	      }
+	    } else if (position === 'up' && board[row - 1]) {
+	      if (board[row - 1][col].isShip === false && row - 1 >= 0) {
+	        row -= 1;
+	        boatLength -= 1;
+	        board[row - 1][col].shipType = boat.type;
+	        coords.push([row, col]);
+	      } else {
+	        boatLength = 0;
+	      }
+	    } else if (position === 'right' && board[row][col + 1]) {
+	      if (board[row][col + 1].isShip === false && col + 1 < size) {
+	        col += 1;
+	        boatLength -= 1;
+	        board[row][col + 1].shipType = boat.type;
+	        coords.push([row, col]);
+	      } else {
+	        boatLength = 0;
+	      }
+	    } else if (position === 'down' && board[row + 1]) {
+	      if (board[row + 1][col].isShip === false && row + 1 < size) {
+	        row += 1;
+	        boatLength -= 1;
+	        board[row + 1][col].shipType = boat.type;
+	        coords.push([row, col]);
+	      } else {
+	        boatLength = 0;
+	      }
+	    } else {
+	      boatLength = 0;
 	    }
 	  }
 
 	  return coords;
 	};
 
+	//take the validated coords and plot to the board
 	var plotBoats = function (board, coords) {
 
 	  //take the board and loop throught the given coords and plot on the board
@@ -20587,7 +20639,7 @@
 	};
 
 	var utils = {
-
+	  //lay out the board for the store
 	  makeBoard: function (size) {
 	    //take the size and return a matrix of arrays to be the board
 	    //number staring passed in so make it a number
@@ -20601,7 +20653,8 @@
 	        row.push({
 	          isClicked: false,
 	          isHit: false,
-	          isShip: false
+	          isShip: false,
+	          shipType: null
 	        });
 	      }
 	      board.push(row);
@@ -20611,26 +20664,19 @@
 	    return board;
 	  },
 
+	  //main function to place the boats
 	  layShips: function (board, size, boats) {
-	    //loop through the boats lengths
-	    //on each generate random coords and position
-	    //go to that coord on the board
-	    //addShip()
-	    //if false returned then have to generate new coords and try again
-	    //else go to the next ship
-	    boats = [2];
-
+	    //boats is an array of objects containing information on the boats
 	    for (var i = 0; i < boats.length; i++) {
 
-	      var boatLength = boats[i];
 	      var pos = genRandomPosition();
 	      var row = genCoord(size - 1);
 	      var col = genCoord(size - 1);
 
 	      if (board[row][col].isShip === false) {
 
-	        var coords = getAllCoordsForBoat(board, boatLength, pos, row, col, size - 1);
-	        console.log('coords', coords);
+	        var coords = getAllCoordsForBoat(board, boats[i], pos, row, col, size);
+	        console.log('coords', coords, 'boat length', boats[i].length);
 
 	        if (coords.length === boatLength) {
 	          board = plotBoats(board, coords);
@@ -20658,13 +20704,6 @@
 
 	var appActions = {
 
-	  setLevel: function (level) {
-	    appDispatcher.handleClientAction({
-	      actionType: "SET_LEVEL",
-	      data: level
-	    });
-	  },
-
 	  setBoardSize: function (boardSize) {
 	    appDispatcher.handleClientAction({
 	      actionType: "SET_BOARD_SIZE",
@@ -20685,6 +20724,99 @@
 	};
 
 	module.exports = appActions;
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var appStore = __webpack_require__(161);
+	var appActions = __webpack_require__(168);
+
+	var Boats = React.createClass({
+	  displayName: 'Boats',
+
+
+	  getInitialState: function () {
+	    appStore.getBoatData();
+	  },
+
+	  componentDidMount: function () {
+	    appStore.addChangeListener(this._onChange);
+	  },
+
+	  componentWillUnmount: function () {
+	    appStore.removeChangeListener(this._onChange);
+	  },
+
+	  _onChange: function () {
+	    //set the new state of the component when triggered by the event listener in the store
+	    //on choosing a board size and changing the level then the board can be rendered to the page
+	    this.setState({
+	      board: appStore.getBoardData()
+	    });
+	  },
+
+	  render: function () {
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h4',
+	          null,
+	          'Boat hits'
+	        ),
+	        React.createElement(
+	          'h6',
+	          null,
+	          'Total hits so far:'
+	        ),
+	        React.createElement(
+	          'h6',
+	          null,
+	          'Hits left to find:'
+	        ),
+	        React.createElement('div', { className: 'boatBox' }),
+	        React.createElement(
+	          'span',
+	          null,
+	          'hits left to make'
+	        ),
+	        React.createElement('div', { className: 'boatBox' }),
+	        React.createElement(
+	          'span',
+	          null,
+	          'hits left to make'
+	        ),
+	        React.createElement('div', { className: 'boatBox' }),
+	        React.createElement(
+	          'span',
+	          null,
+	          'hits left to make'
+	        ),
+	        React.createElement('div', { className: 'boatBox' }),
+	        React.createElement(
+	          'span',
+	          null,
+	          'hits left to make'
+	        ),
+	        React.createElement('div', { className: 'boatBox' }),
+	        React.createElement(
+	          'span',
+	          null,
+	          'hits left to make'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Boats;
 
 /***/ }
 /******/ ]);
