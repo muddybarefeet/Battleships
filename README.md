@@ -5,8 +5,20 @@ Implementation of the traditional game.
 
 ```git clone https://github.com/muddybarefeet/Battleships.git```
 
-* Open it in your browser
-* Play the game!
+* Install the correct dependencies
+
+```npm install```
+
+* Run the basic express server from inside the server folder
+
+```nodemon index.js```
+
+* Go to ```http://localhost:3000/``` to play!
+
+
+###About the stack:###
+
+Written in React and Flux with a simple Express server
 
 
 
