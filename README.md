@@ -1,5 +1,5 @@
 # Battleships
-Implementation of the traditional game.
+Implementation of the traditional game
 
 * Clone this repo
 

@@ -30,7 +30,7 @@ var Boats = React.createClass({
     this.setState({
       boats: appStore.getBoatData()
     });
-
+    
   },
   
   render: function () {

@@ -63,19 +63,15 @@ AppDispatcher.register(function (payload) { //'subscribes' to the dispatcher. St
     //check out its position in the board and render the correct image/colour to the user
     var cell = _board[action.data.row][action.data.col];
     if (cell.isShip) {
+
       cell.isClicked = true;
       cell.isHit = true;
       for (var i = 0; i < _boats.length; i++) {
         if (_boats[i].type === cell.shipType) {
+          console.log('found type');
           _boats[i].hits += 1;
-
-          if (_boats[i].hits === _boats[i].length) {
-            _boats[i].opacity = 1;
-          } else {
-            _boats[i].opacity = _boats[i].hits/_boats[i].length;
-          }
+          _boats[i].opacity = _boats[i].hits/_boats[i].length;
         }
-        break;
       }
       _totals.totalHits += 1;
       _totals.leftToHit -= 1;
