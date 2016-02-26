@@ -59,18 +59,18 @@ var utils = {
     size = parseInt(size, 10);
 
     var board = [];
-    var row = [];
-
-    for (var i = 0; i < size; i++) {
-      row.push({
-        isClicked:false,
-        isHit: false,
-        isShip: false
-      });
-    }
 
     for (var k = 0; k < size; k++) {
+      var row = [];
+      for (var i = 0; i < size; i++) {
+        row.push({
+          isClicked:false,
+          isHit: false,
+          isShip: false
+        });
+      }
       board.push(row);
+      row = [];
     }
 
     return board;

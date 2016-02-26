@@ -19882,27 +19882,27 @@
 	    var cell = _board[action.data.row][action.data.col];
 	    console.log(_board[action.data.row], action.data.row, action.data.col);
 
-	    for (var i = 0; i < _board.length; i++) {
-	      // debugger;
-	      if (i === action.data.row) {
-	        if (_board[i][action.data.col].isShip) {
-	          console.log('bomb hit target');
-	          _board[i][action.data.col].isClicked = true;
-	          _board[i][action.data.col].isHit = true;
-	        } else {
-	          console.log('water');
-	          _board[i][action.data.col].isClicked = true;
-	        }
-	      }
-	    }
-	    // if (cell === 1) {
-	    //   console.log('bomb hit target');
-	    //   cell.isClicked = true;
-	    //   cell.isHit = true;
-	    // } else {
-	    //   console.log('water');
-	    //   cell.isClicked = true;
+	    // for (var i = 0; i < _board.length; i++) {
+	    //     // debugger;
+	    //   if (i === action.data.row) {
+	    //     if (_board[i][action.data.col].isShip) {
+	    //       console.log('bomb hit target');
+	    //       _board[i][action.data.col].isClicked = true;
+	    //       _board[i][action.data.col].isHit = true;
+	    //     } else {
+	    //       console.log('water');
+	    //       _board[i][action.data.col].isClicked = true;
+	    //     }
+	    //   }
 	    // }
+	    if (cell.isShip) {
+	      console.log('bomb hit target');
+	      cell.isClicked = true;
+	      cell.isHit = true;
+	    } else {
+	      console.log('water');
+	      cell.isClicked = true;
+	    }
 	    console.log('cell', _board);
 	    appStore.emitChange();
 	  }
@@ -20609,18 +20609,18 @@
 	    size = parseInt(size, 10);
 
 	    var board = [];
-	    var row = [];
-
-	    for (var i = 0; i < size; i++) {
-	      row.push({
-	        isClicked: false,
-	        isHit: false,
-	        isShip: false
-	      });
-	    }
 
 	    for (var k = 0; k < size; k++) {
+	      var row = [];
+	      for (var i = 0; i < size; i++) {
+	        row.push({
+	          isClicked: false,
+	          isHit: false,
+	          isShip: false
+	        });
+	      }
 	      board.push(row);
+	      row = [];
 	    }
 
 	    return board;
