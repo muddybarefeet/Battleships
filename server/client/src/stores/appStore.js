@@ -7,20 +7,12 @@ var utils = require('./utils.js');
 
 var _board;
 
-var _hits = {
-  "Aircraft carrier": [5, 5],
-  "Battleship": [4, 4],
-  "Submarine": [3, 3],
-  "Cruiser": [3, 3],
-  "Destroyer": [2, 2]
-};
-
 var _boats = [
-              {type: "Aircraft carrier", length: 5},
-              {type: "Battleship", length: 4},
-              {type: "Submarine", length: 3},
-              {type: "Cruiser", length: 3},
-              {type: "Destroyer", length: 2}
+              {type: "Aircraft carrier", length: 5, hits: 0, opacity: 0.1},
+              {type: "Battleship", length: 4, hits: 0, opacity: 0.1},
+              {type: "Submarine", length: 3, hits: 0, opacity: 0.1},
+              {type: "Cruiser", length: 3, hits: 0, opacity: 0.1},
+              {type: "Destroyer", length: 2, hits: 0, opacity: 0.1}
               ];
 
 var appStore = Object.assign(new EventEmitter (), {
@@ -30,7 +22,7 @@ var appStore = Object.assign(new EventEmitter (), {
   },
 
   getBoatData: function () {
-    return _hits;
+    return _boats;
   },
 
   emitChange: function () {
@@ -64,7 +56,20 @@ AppDispatcher.register(function (payload) { //'subscribes' to the dispatcher. St
     if (cell.isShip) {
       cell.isClicked = true;
       cell.isHit = true;
-      _hits[cell.shipType][0] -= 1;
+      for (var i = 0; i < _boats.length; i++) {
+
+        if (_boats[i].type === cell.shipType) {
+          _boats[i].hits += 1;
+
+          if (_boats[i].hits === _boats[i].length) {
+            _boats[i].opacity = 1;
+          } else {
+            _boats[i].opacity = _boats[i].hits/_boats[i].length;
+          }
+          //work out the opacity
+        }
+      }
+
     } else {
       cell.isClicked = true;
     }

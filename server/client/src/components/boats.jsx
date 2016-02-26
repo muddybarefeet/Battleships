@@ -25,7 +25,7 @@ var Boats = React.createClass({
     this.setState({
       board: appStore.getBoardData()
     });
-
+    console.log('opacity', appStore.getBoatData())
     this.setState({
       boats: appStore.getBoatData()
     });
@@ -38,12 +38,7 @@ var Boats = React.createClass({
 
       if (this.state.boats) {
         for (var key in this.state.boats) {
-          var values = this.state.boats[key];
-          if (this.state.boats[key][0] === this.state.boats[key][1]) {
-            scores.push(9);
-          } else {
-            scores.push(((values[0]/values[1])*100));
-          }
+          scores.push(this.state.boats[key].opacity)
         }
       }
 
@@ -57,11 +52,11 @@ var Boats = React.createClass({
         <h6>Total hits so far:{}</h6>
         <h6>Hits left to find:{}</h6>
 
-        <div style={{opacity: '0.'+ scores[0] }} className="boatBox"></div>
-        <div style={{opacity: '0.'+ scores[1] }} className="boatBox"></div>
-        <div style={{opacity: '0.'+ scores[2] }} className="boatBox"></div>
-        <div style={{opacity: '0.'+ scores[3] }} className="boatBox"></div>
-        <div style={{opacity: '0.'+ scores[4] }} className="boatBox"></div>
+        <div style={{opacity: scores[0] }} className="boatBox"></div>
+        <div style={{opacity: scores[1] }} className="boatBox"></div>
+        <div style={{opacity: scores[2] }} className="boatBox"></div>
+        <div style={{opacity: scores[3] }} className="boatBox"></div>
+        <div style={{opacity: scores[4] }} className="boatBox"></div>
 
         </div>
       </div>

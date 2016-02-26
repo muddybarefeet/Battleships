@@ -26,10 +26,8 @@ var Board = React.createClass({
 
   },
 
-  handleClick: function (event) {
-    var col = event.target.cellIndex;
-    var row = event.target.parentElement.rowIndex;
-    appActions.handleClickedCell(row, col);
+  handleClick: function (rowNum, colNum) {
+    appActions.handleClickedCell(rowNum, colNum);
   },
   
   render: function () {
@@ -42,11 +40,11 @@ var Board = React.createClass({
           //make the row a row and the cells cells
           var cells = row.map(function (cell, i) {
             if (cell.isClicked && cell.isHit) {
-              return (<td onClick={that.handleClick} key={i}><img className="tileWidth" src="./../assets/images/bomb.png" /></td>); //currently just put a cell on the page
+              return (<td onClick={that.handleClick.bind(null, index, i)} key={i}><img className="tileWidth" src="./../assets/images/bomb.png" /></td>); //currently just put a cell on the page
             } else if (cell.isClicked && !cell.isHit) {
-              return (<td onClick={that.handleClick} key={i}><img className="tileWidth" src="./../assets/images/waveTile.jpg" /></td>);
+              return (<td onClick={that.handleClick.bind(null, index, i)} key={i}><img className="tileWidth" src="./../assets/images/waveTile.jpg" /></td>);
             } else {
-              return (<td onClick={that.handleClick} key={i}></td>);
+              return (<td onClick={that.handleClick.bind(null, index, i)} key={i}></td>);
             }
           });
           return (<tr key={index}>{cells}</tr>);

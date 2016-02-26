@@ -20,7 +20,7 @@ var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
   while (boatLength > 0) {
     // debugger;
     if (position === 'left' && board[row][col-1]) {
-      if (board[row][col-1].isShip === false && col-1 >= 0) {
+      if (board[row][col-1].isShip === false /*&& board[row][col-1].shipType === null */&& col-1 >= 0) {
         col -= 1;
         boatLength -= 1;
         board[row][col].shipType = boat.type;
@@ -29,7 +29,7 @@ var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
         boatLength = 0;
       }
     } else if (position === 'up' && board[row-1]) {
-      if (board[row][col].isShip === false && row-1 >= 0) {
+      if (board[row-1][col].isShip === false /*&& board[row][col].shipType === null*/ && row-1 >= 0) {
         row -= 1;
         boatLength -= 1;
         board[row][col].shipType = boat.type;
@@ -38,7 +38,7 @@ var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
         boatLength = 0;
       }
     } else if (position === 'right' && board[row][col+1]) {
-      if (board[row][col+1].isShip === false && col+1 < size) {
+      if (board[row][col+1].isShip === false /*&& board[row][col+1].shipType === null */&& col+1 < size) {
         col += 1;
         boatLength -= 1;
         board[row][col].shipType = boat.type;
@@ -47,10 +47,10 @@ var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
         boatLength = 0;
       }
     } else if (position === 'down' && board[row+1]) {
-      if (board[row][col].isShip === false && row+1 < size) {
+      if (board[row+1][col].isShip === false && row+1 < size) {
         row += 1;
         boatLength -= 1;
-        board[row+1][col].shipType = boat.type;
+        board[row][col].shipType = boat.type;
         coords.push([row, col]);
       } else {
         boatLength = 0;
@@ -118,7 +118,7 @@ var utils = {
       if (board[row][col].isShip === false) {
 
         var coords = getAllCoordsForBoat(board, boats[i], pos, row, col, size);
-        console.log('coords', coords, 'boat', boats[i]);
+        // console.log('coords', coords, 'boat', boats[i]);
 
         if (coords.length === boats[i].length) {
           board = plotBoats(board, coords);

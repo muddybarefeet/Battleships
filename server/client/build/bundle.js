@@ -19782,10 +19782,8 @@
 	    });
 	  },
 
-	  handleClick: function (event) {
-	    var col = event.target.cellIndex;
-	    var row = event.target.parentElement.rowIndex;
-	    appActions.handleClickedCell(row, col);
+	  handleClick: function (rowNum, colNum) {
+	    appActions.handleClickedCell(rowNum, colNum);
 	  },
 
 	  render: function () {
@@ -19800,17 +19798,17 @@
 	          if (cell.isClicked && cell.isHit) {
 	            return React.createElement(
 	              'td',
-	              { onClick: that.handleClick, key: i },
+	              { onClick: that.handleClick.bind(null, index, i), key: i },
 	              React.createElement('img', { className: 'tileWidth', src: './../assets/images/bomb.png' })
 	            ); //currently just put a cell on the page
 	          } else if (cell.isClicked && !cell.isHit) {
 	              return React.createElement(
 	                'td',
-	                { onClick: that.handleClick, key: i },
+	                { onClick: that.handleClick.bind(null, index, i), key: i },
 	                React.createElement('img', { className: 'tileWidth', src: './../assets/images/waveTile.jpg' })
 	              );
 	            } else {
-	              return React.createElement('td', { onClick: that.handleClick, key: i });
+	              return React.createElement('td', { onClick: that.handleClick.bind(null, index, i), key: i });
 	            }
 	        });
 	        return React.createElement(
@@ -19851,15 +19849,7 @@
 
 	var _board;
 
-	var _hits = {
-	  "Aircraft carrier": [5, 5],
-	  "Battleship": [4, 4],
-	  "Submarine": [3, 3],
-	  "Cruiser": [3, 3],
-	  "Destroyer": [2, 2]
-	};
-
-	var _boats = [{ type: "Aircraft carrier", length: 5 }, { type: "Battleship", length: 4 }, { type: "Submarine", length: 3 }, { type: "Cruiser", length: 3 }, { type: "Destroyer", length: 2 }];
+	var _boats = [{ type: "Aircraft carrier", length: 5, hits: 0, opacity: 0.1 }, { type: "Battleship", length: 4, hits: 0, opacity: 0.1 }, { type: "Submarine", length: 3, hits: 0, opacity: 0.1 }, { type: "Cruiser", length: 3, hits: 0, opacity: 0.1 }, { type: "Destroyer", length: 2, hits: 0, opacity: 0.1 }];
 
 	var appStore = Object.assign(new EventEmitter(), {
 
@@ -19868,7 +19858,7 @@
 	  },
 
 	  getBoatData: function () {
-	    return _hits;
+	    return _boats;
 	  },
 
 	  emitChange: function () {
@@ -19903,10 +19893,22 @@
 	    if (cell.isShip) {
 	      cell.isClicked = true;
 	      cell.isHit = true;
-	      _hits[cell.shipType][0] -= 1;
+	      for (var i = 0; i < _boats.length; i++) {
+
+	        if (_boats[i].type === cell.shipType) {
+	          _boats[i].hits += 1;
+
+	          if (_boats[i].hits === _boats[i].length) {
+	            _boats[i].opacity = 1;
+	          } else {
+	            _boats[i].opacity = _boats[i].hits / _boats[i].length;
+	          }
+	          //work out the opacity
+	        }
+	      }
 	    } else {
-	      cell.isClicked = true;
-	    }
+	        cell.isClicked = true;
+	      }
 	    appStore.emitChange();
 	  }
 	});
@@ -20579,7 +20581,7 @@
 	  while (boatLength > 0) {
 	    // debugger;
 	    if (position === 'left' && board[row][col - 1]) {
-	      if (board[row][col - 1].isShip === false && col - 1 >= 0) {
+	      if (board[row][col - 1].isShip === false /*&& board[row][col-1].shipType === null */ && col - 1 >= 0) {
 	        col -= 1;
 	        boatLength -= 1;
 	        board[row][col].shipType = boat.type;
@@ -20588,7 +20590,7 @@
 	        boatLength = 0;
 	      }
 	    } else if (position === 'up' && board[row - 1]) {
-	      if (board[row][col].isShip === false && row - 1 >= 0) {
+	      if (board[row - 1][col].isShip === false /*&& board[row][col].shipType === null*/ && row - 1 >= 0) {
 	        row -= 1;
 	        boatLength -= 1;
 	        board[row][col].shipType = boat.type;
@@ -20597,7 +20599,7 @@
 	        boatLength = 0;
 	      }
 	    } else if (position === 'right' && board[row][col + 1]) {
-	      if (board[row][col + 1].isShip === false && col + 1 < size) {
+	      if (board[row][col + 1].isShip === false /*&& board[row][col+1].shipType === null */ && col + 1 < size) {
 	        col += 1;
 	        boatLength -= 1;
 	        board[row][col].shipType = boat.type;
@@ -20606,10 +20608,10 @@
 	        boatLength = 0;
 	      }
 	    } else if (position === 'down' && board[row + 1]) {
-	      if (board[row][col].isShip === false && row + 1 < size) {
+	      if (board[row + 1][col].isShip === false && row + 1 < size) {
 	        row += 1;
 	        boatLength -= 1;
-	        board[row + 1][col].shipType = boat.type;
+	        board[row][col].shipType = boat.type;
 	        coords.push([row, col]);
 	      } else {
 	        boatLength = 0;
@@ -20672,7 +20674,7 @@
 	      if (board[row][col].isShip === false) {
 
 	        var coords = getAllCoordsForBoat(board, boats[i], pos, row, col, size);
-	        console.log('coords', coords, 'boat', boats[i]);
+	        // console.log('coords', coords, 'boat', boats[i]);
 
 	        if (coords.length === boats[i].length) {
 	          board = plotBoats(board, coords);
@@ -20754,7 +20756,7 @@
 	    this.setState({
 	      board: appStore.getBoardData()
 	    });
-
+	    console.log('opacity', appStore.getBoatData());
 	    this.setState({
 	      boats: appStore.getBoatData()
 	    });
@@ -20766,12 +20768,7 @@
 
 	    if (this.state.boats) {
 	      for (var key in this.state.boats) {
-	        var values = this.state.boats[key];
-	        if (this.state.boats[key][0] === this.state.boats[key][1]) {
-	          scores.push(9);
-	        } else {
-	          scores.push(values[0] / values[1] * 100);
-	        }
+	        scores.push(this.state.boats[key].opacity);
 	      }
 	    }
 
@@ -20796,11 +20793,11 @@
 	          null,
 	          'Hits left to find:'
 	        ),
-	        React.createElement('div', { style: { opacity: '0.' + scores[0] }, className: 'boatBox' }),
-	        React.createElement('div', { style: { opacity: '0.' + scores[1] }, className: 'boatBox' }),
-	        React.createElement('div', { style: { opacity: '0.' + scores[2] }, className: 'boatBox' }),
-	        React.createElement('div', { style: { opacity: '0.' + scores[3] }, className: 'boatBox' }),
-	        React.createElement('div', { style: { opacity: '0.' + scores[4] }, className: 'boatBox' })
+	        React.createElement('div', { style: { opacity: scores[0] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: scores[1] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: scores[2] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: scores[3] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: scores[4] }, className: 'boatBox' })
 	      )
 	    );
 	  }
