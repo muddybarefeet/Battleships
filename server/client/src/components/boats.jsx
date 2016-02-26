@@ -6,7 +6,9 @@ var appActions = require('./../actions/appActions.js');
 var Boats = React.createClass({
   
   getInitialState: function () {
-    appStore.getBoatData();
+    return {
+      boats: appStore.getBoatData()
+    };
   },
 
   componentDidMount: function () {
@@ -24,11 +26,26 @@ var Boats = React.createClass({
       board: appStore.getBoardData()
     });
 
+    this.setState({
+      boats: appStore.getBoatData()
+    });
+
   },
   
   render: function () {
 
-      
+      var scores = [];
+
+      if (this.state.boats) {
+        for (var key in this.state.boats) {
+          var values = this.state.boats[key];
+          if (this.state.boats[key][0] === this.state.boats[key][1]) {
+            scores.push(9);
+          } else {
+            scores.push(((values[0]/values[1])*100));
+          }
+        }
+      }
 
       return (
      
@@ -36,16 +53,15 @@ var Boats = React.createClass({
         <div>
         {/*here display the boats and a count of how many hits left to take*/}
 
-        <h4>Boat hits</h4>
+        <h4 className="titleCase">Boat hits</h4>
         <h6>Total hits so far:{}</h6>
         <h6>Hits left to find:{}</h6>
 
-
-        <div className="boatBox"></div><span>{}hits left to make</span>
-        <div className="boatBox"></div><span>{}hits left to make</span>
-        <div className="boatBox"></div><span>{}hits left to make</span>
-        <div className="boatBox"></div><span>{}hits left to make</span>
-        <div className="boatBox"></div><span>{}hits left to make</span>
+        <div style={{opacity: '0.'+ scores[0] }} className="boatBox"></div>
+        <div style={{opacity: '0.'+ scores[1] }} className="boatBox"></div>
+        <div style={{opacity: '0.'+ scores[2] }} className="boatBox"></div>
+        <div style={{opacity: '0.'+ scores[3] }} className="boatBox"></div>
+        <div style={{opacity: '0.'+ scores[4] }} className="boatBox"></div>
 
         </div>
       </div>

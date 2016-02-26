@@ -8,11 +8,11 @@ var utils = require('./utils.js');
 var _board;
 
 var _hits = {
-  "Aircraft carrier": 5,
-  "Battleship": 4,
-  "Submarine": 3,
-  "Cruiser": 3,
-  "Destroyer": 2
+  "Aircraft carrier": [5, 5],
+  "Battleship": [4, 4],
+  "Submarine": [3, 3],
+  "Cruiser": [3, 3],
+  "Destroyer": [2, 2]
 };
 
 var _boats = [
@@ -64,7 +64,7 @@ AppDispatcher.register(function (payload) { //'subscribes' to the dispatcher. St
     if (cell.isShip) {
       cell.isClicked = true;
       cell.isHit = true;
-      _hits[cell.shipType] -= 1;
+      _hits[cell.shipType][0] -= 1;
     } else {
       cell.isClicked = true;
     }

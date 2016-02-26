@@ -27,12 +27,12 @@ var App = React.createClass({
 
         <div className="flexHeader">
 
-          <h1 className="font spaceRight">Battleships</h1>
+          <h1 className="titleCase header spaceRight">Battleships</h1>
 
         </div>
-        
+
         <div className="row">
-          <div className="col-xs-6 col-md-6">
+          <div className="col-xs-8 col-md-8">
             <select className="form-control" onChange={this.handleBoardSizeChange}>
               <option>Chose your board size</option>
               <option>8 x 8</option>
@@ -41,17 +41,17 @@ var App = React.createClass({
             </select>
           </div>
 
-          <div className="col-xs-6 col-md-6">
-            data
+          <div className="col-xs-4 col-md-4">
+
           </div>
         </div>
 
         <div className="row">
-          <div className="col-xs-6 col-md-7">
+          <div className="col-xs-8 col-md-8">
             <Board />
           </div>
 
-          <div className="col-xs-4 col-md-3">
+          <div className="col-xs-4 col-md-4">
             <Boats />
           </div>
 

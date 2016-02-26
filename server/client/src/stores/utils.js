@@ -23,16 +23,16 @@ var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
       if (board[row][col-1].isShip === false && col-1 >= 0) {
         col -= 1;
         boatLength -= 1;
-        board[row][col-1].shipType = boat.type;
+        board[row][col].shipType = boat.type;
         coords.push([row,col]);
       } else {
         boatLength = 0;
       }
     } else if (position === 'up' && board[row-1]) {
-      if (board[row-1][col].isShip === false && row-1 >= 0) {
+      if (board[row][col].isShip === false && row-1 >= 0) {
         row -= 1;
         boatLength -= 1;
-        board[row-1][col].shipType = boat.type;
+        board[row][col].shipType = boat.type;
         coords.push([row, col]);
       } else {
         boatLength = 0;
@@ -41,13 +41,13 @@ var getAllCoordsForBoat = function (board, boat, position, row, col, size) {
       if (board[row][col+1].isShip === false && col+1 < size) {
         col += 1;
         boatLength -= 1;
-        board[row][col+1].shipType = boat.type;
+        board[row][col].shipType = boat.type;
         coords.push([row, col]);
       } else {
         boatLength = 0;
       }
     } else if (position === 'down' && board[row+1]) {
-      if (board[row+1][col].isShip === false && row+1 < size) {
+      if (board[row][col].isShip === false && row+1 < size) {
         row += 1;
         boatLength -= 1;
         board[row+1][col].shipType = boat.type;
@@ -112,15 +112,15 @@ var utils = {
     for (var i = 0; i < boats.length; i++) {
 
       var pos = genRandomPosition();
-      var row = genCoord(size-1);
-      var col = genCoord(size-1);
+      var row = genCoord(size);
+      var col = genCoord(size);
 
       if (board[row][col].isShip === false) {
 
         var coords = getAllCoordsForBoat(board, boats[i], pos, row, col, size);
-        console.log('coords', coords, 'boat length', boats[i].length);
+        console.log('coords', coords, 'boat', boats[i]);
 
-        if (coords.length === boatLength) {
+        if (coords.length === boats[i].length) {
           board = plotBoats(board, coords);
         } else {
           i--;

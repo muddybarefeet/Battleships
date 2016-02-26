@@ -1,7 +1,15 @@
 html body {
   margin: 0;
   height: 100%;
+}
+
+.titleCase {
   font-family: 'Black Ops One', cursive;
+}
+
+.header {
+  font-size: 55px;
+  text-align: center;
 }
 
 td {
@@ -28,12 +36,6 @@ table {
   background-color: white;
 }
 
-.font {
-  /*font-family: 'Jim Nightshade', cursive;*/
-  font-size: 55px;
-  text-align: center;
-}
-
 .flexHeader {
   display: flex;
   justify-content: flex-start;
@@ -44,10 +46,14 @@ table {
   margin-right: 20px;
 }
 
+/*to be changed when get images*/
 .boatBox {
-  border: 1px solid blue;
   width: 80px;
   height: 30px;
+  background-color: black;
+  margin-bottom: 20px;
 }
+
+
 
 

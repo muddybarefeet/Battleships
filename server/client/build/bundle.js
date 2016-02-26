@@ -19691,7 +19691,7 @@
 	        { className: 'flexHeader' },
 	        React.createElement(
 	          'h1',
-	          { className: 'font spaceRight' },
+	          { className: 'titleCase header spaceRight' },
 	          'Battleships'
 	        )
 	      ),
@@ -19700,7 +19700,7 @@
 	        { className: 'row' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-xs-6 col-md-6' },
+	          { className: 'col-xs-8 col-md-8' },
 	          React.createElement(
 	            'select',
 	            { className: 'form-control', onChange: this.handleBoardSizeChange },
@@ -19726,23 +19726,19 @@
 	            )
 	          )
 	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'col-xs-6 col-md-6' },
-	          'data'
-	        )
+	        React.createElement('div', { className: 'col-xs-4 col-md-4' })
 	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-xs-6 col-md-7' },
+	          { className: 'col-xs-8 col-md-8' },
 	          React.createElement(Board, null)
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-xs-4 col-md-3' },
+	          { className: 'col-xs-4 col-md-4' },
 	          React.createElement(Boats, null)
 	        )
 	      )
@@ -19856,11 +19852,11 @@
 	var _board;
 
 	var _hits = {
-	  "Aircraft carrier": 5,
-	  "Battleship": 4,
-	  "Submarine": 3,
-	  "Cruiser": 3,
-	  "Destroyer": 2
+	  "Aircraft carrier": [5, 5],
+	  "Battleship": [4, 4],
+	  "Submarine": [3, 3],
+	  "Cruiser": [3, 3],
+	  "Destroyer": [2, 2]
 	};
 
 	var _boats = [{ type: "Aircraft carrier", length: 5 }, { type: "Battleship", length: 4 }, { type: "Submarine", length: 3 }, { type: "Cruiser", length: 3 }, { type: "Destroyer", length: 2 }];
@@ -19907,7 +19903,7 @@
 	    if (cell.isShip) {
 	      cell.isClicked = true;
 	      cell.isHit = true;
-	      _hits[cell.shipType] -= 1;
+	      _hits[cell.shipType][0] -= 1;
 	    } else {
 	      cell.isClicked = true;
 	    }
@@ -20586,16 +20582,16 @@
 	      if (board[row][col - 1].isShip === false && col - 1 >= 0) {
 	        col -= 1;
 	        boatLength -= 1;
-	        board[row][col - 1].shipType = boat.type;
+	        board[row][col].shipType = boat.type;
 	        coords.push([row, col]);
 	      } else {
 	        boatLength = 0;
 	      }
 	    } else if (position === 'up' && board[row - 1]) {
-	      if (board[row - 1][col].isShip === false && row - 1 >= 0) {
+	      if (board[row][col].isShip === false && row - 1 >= 0) {
 	        row -= 1;
 	        boatLength -= 1;
-	        board[row - 1][col].shipType = boat.type;
+	        board[row][col].shipType = boat.type;
 	        coords.push([row, col]);
 	      } else {
 	        boatLength = 0;
@@ -20604,13 +20600,13 @@
 	      if (board[row][col + 1].isShip === false && col + 1 < size) {
 	        col += 1;
 	        boatLength -= 1;
-	        board[row][col + 1].shipType = boat.type;
+	        board[row][col].shipType = boat.type;
 	        coords.push([row, col]);
 	      } else {
 	        boatLength = 0;
 	      }
 	    } else if (position === 'down' && board[row + 1]) {
-	      if (board[row + 1][col].isShip === false && row + 1 < size) {
+	      if (board[row][col].isShip === false && row + 1 < size) {
 	        row += 1;
 	        boatLength -= 1;
 	        board[row + 1][col].shipType = boat.type;
@@ -20670,15 +20666,15 @@
 	    for (var i = 0; i < boats.length; i++) {
 
 	      var pos = genRandomPosition();
-	      var row = genCoord(size - 1);
-	      var col = genCoord(size - 1);
+	      var row = genCoord(size);
+	      var col = genCoord(size);
 
 	      if (board[row][col].isShip === false) {
 
 	        var coords = getAllCoordsForBoat(board, boats[i], pos, row, col, size);
-	        console.log('coords', coords, 'boat length', boats[i].length);
+	        console.log('coords', coords, 'boat', boats[i]);
 
-	        if (coords.length === boatLength) {
+	        if (coords.length === boats[i].length) {
 	          board = plotBoats(board, coords);
 	        } else {
 	          i--;
@@ -20739,7 +20735,9 @@
 
 
 	  getInitialState: function () {
-	    appStore.getBoatData();
+	    return {
+	      boats: appStore.getBoatData()
+	    };
 	  },
 
 	  componentDidMount: function () {
@@ -20756,9 +20754,26 @@
 	    this.setState({
 	      board: appStore.getBoardData()
 	    });
+
+	    this.setState({
+	      boats: appStore.getBoatData()
+	    });
 	  },
 
 	  render: function () {
+
+	    var scores = [];
+
+	    if (this.state.boats) {
+	      for (var key in this.state.boats) {
+	        var values = this.state.boats[key];
+	        if (this.state.boats[key][0] === this.state.boats[key][1]) {
+	          scores.push(9);
+	        } else {
+	          scores.push(values[0] / values[1] * 100);
+	        }
+	      }
+	    }
 
 	    return React.createElement(
 	      'div',
@@ -20768,7 +20783,7 @@
 	        null,
 	        React.createElement(
 	          'h4',
-	          null,
+	          { className: 'titleCase' },
 	          'Boat hits'
 	        ),
 	        React.createElement(
@@ -20781,36 +20796,11 @@
 	          null,
 	          'Hits left to find:'
 	        ),
-	        React.createElement('div', { className: 'boatBox' }),
-	        React.createElement(
-	          'span',
-	          null,
-	          'hits left to make'
-	        ),
-	        React.createElement('div', { className: 'boatBox' }),
-	        React.createElement(
-	          'span',
-	          null,
-	          'hits left to make'
-	        ),
-	        React.createElement('div', { className: 'boatBox' }),
-	        React.createElement(
-	          'span',
-	          null,
-	          'hits left to make'
-	        ),
-	        React.createElement('div', { className: 'boatBox' }),
-	        React.createElement(
-	          'span',
-	          null,
-	          'hits left to make'
-	        ),
-	        React.createElement('div', { className: 'boatBox' }),
-	        React.createElement(
-	          'span',
-	          null,
-	          'hits left to make'
-	        )
+	        React.createElement('div', { style: { opacity: '0.' + scores[0] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: '0.' + scores[1] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: '0.' + scores[2] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: '0.' + scores[3] }, className: 'boatBox' }),
+	        React.createElement('div', { style: { opacity: '0.' + scores[4] }, className: 'boatBox' })
 	      )
 	    );
 	  }
