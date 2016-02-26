@@ -19690,6 +19690,10 @@
 	    });
 	  },
 
+	  newGame: function () {
+	    location.reload();
+	  },
+
 	  render: function render() {
 
 	    var boats;
@@ -19741,7 +19745,15 @@
 	            )
 	          )
 	        ),
-	        React.createElement('div', { className: 'col-xs-5 col-md-5' })
+	        React.createElement(
+	          'div',
+	          { className: 'col-xs-5 col-md-5' },
+	          React.createElement(
+	            'button',
+	            { type: 'button', className: 'btn btn-success', onClick: this.newGame },
+	            'Play agian!'
+	          )
+	        )
 	      ),
 	      React.createElement(
 	        'div',

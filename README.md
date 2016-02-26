@@ -13,6 +13,10 @@ Implementation of the traditional game
 
 ```nodemon index.js```
 
+* Run webpack
+
+```webpack --progress```
+
 * Go to ```http://localhost:3000/``` to play!
 
 

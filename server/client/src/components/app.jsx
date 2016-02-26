@@ -29,6 +29,10 @@ var App = React.createClass({
     })
   },
 
+  newGame: function () {
+    location.reload();
+  },
+
   render: function render () {
 
     var boats;
@@ -57,7 +61,7 @@ var App = React.createClass({
           </div>
 
           <div className="col-xs-5 col-md-5">
-
+            <button type="button" className="btn btn-success" onClick={this.newGame}>Play agian!</button>
           </div>
         </div>
 
