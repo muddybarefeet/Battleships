@@ -7,7 +7,8 @@ var Boats = React.createClass({
   
   getInitialState: function () {
     return {
-      boats: appStore.getBoatData()
+      boats: appStore.getBoatData(),
+      totals: appStore.getTotalsData()
     };
   },
 
@@ -25,7 +26,7 @@ var Boats = React.createClass({
     this.setState({
       board: appStore.getBoardData()
     });
-    console.log('opacity', appStore.getBoatData())
+
     this.setState({
       boats: appStore.getBoatData()
     });
@@ -44,13 +45,13 @@ var Boats = React.createClass({
 
       return (
      
-      <div>
+      <div className="asideMarginTop">
         <div>
         {/*here display the boats and a count of how many hits left to take*/}
 
         <h4 className="titleCase">Boat hits</h4>
-        <h6>Total hits so far:{}</h6>
-        <h6>Hits left to find:{}</h6>
+        <h6>Total hits so far: {this.state.totals.totalHits}</h6>
+        <h6>Hits left to find: {this.state.totals.leftToHit}</h6>
 
         <div style={{opacity: scores[0] }} className="boatBox"></div>
         <div style={{opacity: scores[1] }} className="boatBox"></div>

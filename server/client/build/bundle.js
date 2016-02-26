@@ -19670,6 +19670,12 @@
 	  displayName: 'App',
 
 
+	  getInitialState: function () {
+	    return {
+	      levelChosen: false
+	    };
+	  },
+
 	  // handleLevelChange: function (event) {
 	  //   console.log('levelpicked:', event.target.value);
 	  //   //this sent to stores to know how many ships to place
@@ -19679,9 +19685,18 @@
 	  handleBoardSizeChange: function (event) {
 	    //this is go to the store to make the correct board size in the store
 	    appActions.setBoardSize(event.target.value);
+	    this.setState({
+	      levelChosen: true
+	    });
 	  },
 
 	  render: function render() {
+
+	    var boats;
+
+	    if (this.state.levelChosen) {
+	      boats = React.createElement(Boats, null);
+	    }
 
 	    return React.createElement(
 	      'div',
@@ -19700,7 +19715,7 @@
 	        { className: 'row' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-xs-8 col-md-8' },
+	          { className: 'col-xs-7 col-md-7' },
 	          React.createElement(
 	            'select',
 	            { className: 'form-control', onChange: this.handleBoardSizeChange },
@@ -19726,20 +19741,20 @@
 	            )
 	          )
 	        ),
-	        React.createElement('div', { className: 'col-xs-4 col-md-4' })
+	        React.createElement('div', { className: 'col-xs-5 col-md-5' })
 	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-xs-8 col-md-8' },
+	          { className: 'col-xs-7 col-md-7' },
 	          React.createElement(Board, null)
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-xs-4 col-md-4' },
-	          React.createElement(Boats, null)
+	          { className: 'col-xs-5 col-md-5' },
+	          boats
 	        )
 	      )
 	    );
@@ -19849,6 +19864,11 @@
 
 	var _board;
 
+	var _totals = {
+	  totalHits: 0,
+	  leftToHit: 17
+	};
+
 	var _boats = [{ type: "Aircraft carrier", length: 5, hits: 0, opacity: 0.1 }, { type: "Battleship", length: 4, hits: 0, opacity: 0.1 }, { type: "Submarine", length: 3, hits: 0, opacity: 0.1 }, { type: "Cruiser", length: 3, hits: 0, opacity: 0.1 }, { type: "Destroyer", length: 2, hits: 0, opacity: 0.1 }];
 
 	var appStore = Object.assign(new EventEmitter(), {
@@ -19859,6 +19879,10 @@
 
 	  getBoatData: function () {
 	    return _boats;
+	  },
+
+	  getTotalsData: function () {
+	    return _totals;
 	  },
 
 	  emitChange: function () {
@@ -19894,7 +19918,6 @@
 	      cell.isClicked = true;
 	      cell.isHit = true;
 	      for (var i = 0; i < _boats.length; i++) {
-
 	        if (_boats[i].type === cell.shipType) {
 	          _boats[i].hits += 1;
 
@@ -19903,12 +19926,14 @@
 	          } else {
 	            _boats[i].opacity = _boats[i].hits / _boats[i].length;
 	          }
-	          //work out the opacity
 	        }
+	        break;
 	      }
+	      _totals.totalHits += 1;
+	      _totals.leftToHit -= 1;
 	    } else {
-	        cell.isClicked = true;
-	      }
+	      cell.isClicked = true;
+	    }
 	    appStore.emitChange();
 	  }
 	});
@@ -20738,7 +20763,8 @@
 
 	  getInitialState: function () {
 	    return {
-	      boats: appStore.getBoatData()
+	      boats: appStore.getBoatData(),
+	      totals: appStore.getTotalsData()
 	    };
 	  },
 
@@ -20756,7 +20782,7 @@
 	    this.setState({
 	      board: appStore.getBoardData()
 	    });
-	    console.log('opacity', appStore.getBoatData());
+
 	    this.setState({
 	      boats: appStore.getBoatData()
 	    });
@@ -20774,7 +20800,7 @@
 
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'asideMarginTop' },
 	      React.createElement(
 	        'div',
 	        null,
@@ -20786,12 +20812,14 @@
 	        React.createElement(
 	          'h6',
 	          null,
-	          'Total hits so far:'
+	          'Total hits so far: ',
+	          this.state.totals.totalHits
 	        ),
 	        React.createElement(
 	          'h6',
 	          null,
-	          'Hits left to find:'
+	          'Hits left to find: ',
+	          this.state.totals.leftToHit
 	        ),
 	        React.createElement('div', { style: { opacity: scores[0] }, className: 'boatBox' }),
 	        React.createElement('div', { style: { opacity: scores[1] }, className: 'boatBox' }),

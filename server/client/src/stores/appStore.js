@@ -7,6 +7,11 @@ var utils = require('./utils.js');
 
 var _board;
 
+var _totals = {
+  totalHits: 0,
+  leftToHit: 17
+};
+
 var _boats = [
               {type: "Aircraft carrier", length: 5, hits: 0, opacity: 0.1},
               {type: "Battleship", length: 4, hits: 0, opacity: 0.1},
@@ -23,6 +28,10 @@ var appStore = Object.assign(new EventEmitter (), {
 
   getBoatData: function () {
     return _boats;
+  },
+
+  getTotalsData: function () {
+    return _totals;
   },
 
   emitChange: function () {
@@ -57,7 +66,6 @@ AppDispatcher.register(function (payload) { //'subscribes' to the dispatcher. St
       cell.isClicked = true;
       cell.isHit = true;
       for (var i = 0; i < _boats.length; i++) {
-
         if (_boats[i].type === cell.shipType) {
           _boats[i].hits += 1;
 
@@ -66,9 +74,11 @@ AppDispatcher.register(function (payload) { //'subscribes' to the dispatcher. St
           } else {
             _boats[i].opacity = _boats[i].hits/_boats[i].length;
           }
-          //work out the opacity
         }
+        break;
       }
+      _totals.totalHits += 1;
+      _totals.leftToHit -= 1;
 
     } else {
       cell.isClicked = true;

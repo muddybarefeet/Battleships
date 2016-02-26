@@ -29,7 +29,6 @@ table {
   margin-top:30px;
 }
 
-
 .tileWidth {
   width: 40px;
   border: 1px solid #e4e4e4;
@@ -54,6 +53,7 @@ table {
   margin-bottom: 20px;
 }
 
-
-
+.asideMarginTop {
+  margin-top: 30px;
+}
 

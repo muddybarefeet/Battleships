@@ -9,6 +9,12 @@ var appActions = require('./../actions/appActions.js');
 
 var App = React.createClass({
 
+  getInitialState: function () {
+      return {
+        levelChosen: false
+      };
+  },
+
   // handleLevelChange: function (event) {
   //   console.log('levelpicked:', event.target.value);
   //   //this sent to stores to know how many ships to place
@@ -18,9 +24,18 @@ var App = React.createClass({
   handleBoardSizeChange: function (event) {
     //this is go to the store to make the correct board size in the store
     appActions.setBoardSize(event.target.value);
+    this.setState({
+      levelChosen: true
+    })
   },
 
   render: function render () {
+
+    var boats;
+
+    if (this.state.levelChosen) {
+      boats = (<Boats />);
+    }
 
     return (
       <div className="container">
@@ -32,7 +47,7 @@ var App = React.createClass({
         </div>
 
         <div className="row">
-          <div className="col-xs-8 col-md-8">
+          <div className="col-xs-7 col-md-7">
             <select className="form-control" onChange={this.handleBoardSizeChange}>
               <option>Chose your board size</option>
               <option>8 x 8</option>
@@ -41,18 +56,19 @@ var App = React.createClass({
             </select>
           </div>
 
-          <div className="col-xs-4 col-md-4">
+          <div className="col-xs-5 col-md-5">
 
           </div>
         </div>
 
         <div className="row">
-          <div className="col-xs-8 col-md-8">
-            <Board />
+
+          <div className="col-xs-7 col-md-7">
+            <Board/>
           </div>
 
-          <div className="col-xs-4 col-md-4">
-            <Boats />
+          <div className="col-xs-5 col-md-5">
+            {boats}
           </div>
 
         </div>
